@@ -5,8 +5,14 @@ import random
 import unittest
 
 from monero.address import address
-from monero.numbers import PaymentID
-from monero.transaction import IncomingPayment, OutgoingPayment, Transaction, _ByHeight
+from monero.numbers import PaymentID, to_atomic
+from monero.transaction import (
+    IncomingPayment,
+    OutgoingPayment,
+    Transaction,
+    _ByHeight,
+    Input
+)
 
 class FiltersTestCase(unittest.TestCase):
     def setUp(self):
@@ -48,3 +54,10 @@ class SortingTestCase(unittest.TestCase):
                 [None, None, 100, 13, 12, 10, 1])
             random.shuffle(pmts)
 
+
+class TestInput:
+    def test_amount(self):
+        amount = 100
+        dummy_input = Input(atomic_amount=to_atomic(amount))
+
+        assert dummy_input.amount == amount

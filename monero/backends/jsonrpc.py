@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 import operator
 import json
 import logging
@@ -11,7 +11,9 @@ from ..account import Account
 from ..address import address, Address, SubAddress
 from ..numbers import from_atomic, to_atomic, PaymentID
 from ..seed import Seed
-from ..transaction import Transaction, IncomingPayment, OutgoingPayment
+from ..transaction import (
+    Transaction, IncomingPayment, OutgoingPayment, Input
+)
 
 _log = logging.getLogger(__name__)
 
@@ -185,12 +187,53 @@ class JSONRPCWallet(object):
         _balance = self.raw_request('getbalance', {'account_index': account})
         return (from_atomic(_balance['balance']), from_atomic(_balance['unlocked_balance']))
 
+    def get_unspent_inputs(
+        self,
+        account_index: int = 0,
+        subaddr_indices: Optional[List[int]] = None,
+        verbose: bool = False
+    ) -> List[Input]:
+        """
+        Fetches the unspent inputs in the Wallet.
+
+        Args:
+            account_index: The index of the account whose Unspent Inputs we
+            want to fetch.
+            subaddr_indices: If it's provided, this function only fetches the
+            Unspent Inputs addressed to the Subaddress whose indices are
+            included in this list.
+            verbose: Whether to include key_image in the RPC response.
+        """
+        params = {
+            "transfer_type": "available",
+            'account_index': account_index,
+            'verbose': verbose
+        }
+        if subaddr_indices:
+            params['subaddr_indices'] = subaddr_indices
+
+        method = "incoming_transfers"
+        inputs = self.raw_request(method, params)["transfers"]
+
+        return [
+            Input(
+                atomic_amount=elem.get("amount"),
+                global_index=elem.get("global index"),
+                key_image=elem.get("key image"),
+                spent=elem.get("spent"),
+                subaddr_index=elem.get("subaddr index"),
+                tx_hash=elem.get("tx hash"),
+                tx_size=elem.get("tx size"),
+            )
+            for elem in inputs
+        ]
+
     def get_incoming_transactions(
         self,
-        account_index=0,
-        unconfirmed=False,
-        min_height=0,
-        subaddr_indices=None
+        account_index: int = 0,
+        unconfirmed: bool = False,
+        min_height: int = 0,
+        subaddr_indices: Optional[List[int]] = None
     ) -> List[IncomingPayment]:
         """
         Calls the wallet RPC to get incoming transactions.
@@ -201,6 +244,9 @@ class JSONRPCWallet(object):
             in the pool).
             min_height: The height of the block where we want to start scanning
             from.
+            subaddr_indices: If this is included, this function only fetches
+            the the Incoming Transactions addressed to the Subaddresses whose
+            indices are included in this list
         """
         params: Dict[str, Any] = {
             'account_index': account_index,

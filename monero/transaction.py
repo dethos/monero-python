@@ -1,7 +1,8 @@
 import sys
 import warnings
+from decimal import Decimal
 from .address import address
-from .numbers import PaymentID
+from .numbers import PaymentID, from_atomic
 
 class Payment(object):
     """
@@ -217,3 +218,33 @@ class PaymentFilter(object):
         return sorted(
             filter(self.check, payments),
             key=_ByHeight)
+
+
+class Input:
+    """
+    Represents Wallet Inputs. Both spent and unspent.
+    """
+    def __init__(
+        self,
+        atomic_amount: int = 0,
+        global_index: int = 0,
+        key_image: str = "",
+        spent: bool = False,
+        subaddr_index: int = 0,
+        tx_hash: str = "",
+        tx_size: int = 0,
+    ):
+        self.atomic_amount = atomic_amount
+        self.global_index = global_index
+        self.key_image = key_image
+        self.spent = spent
+        self.subaddr_index = subaddr_index
+        self.tx_hash = tx_hash
+        self.tx_size = tx_size
+
+    @property
+    def amount(self) -> Decimal:
+        '''
+        Returns the Input's amount, expressed in XMR.
+        '''
+        return from_atomic(self.atomic_amount)
