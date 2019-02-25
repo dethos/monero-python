@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Any, Dict, List
 import operator
 import json
 import logging
@@ -184,6 +185,47 @@ class JSONRPCWallet(object):
         _balance = self.raw_request('getbalance', {'account_index': account})
         return (from_atomic(_balance['balance']), from_atomic(_balance['unlocked_balance']))
 
+    def get_incoming_transactions(
+        self,
+        account_index=0,
+        unconfirmed=False,
+        min_height=0,
+        subaddr_indices=None
+    ) -> List[IncomingPayment]:
+        """
+        Calls the wallet RPC to get incoming transactions.
+
+        Args:
+            account_index: The index of the account we want to query.
+            unconfirmed: Whether to include unconfirmed transactions (the ones
+            in the pool).
+            min_height: The height of the block where we want to start scanning
+            from.
+        """
+        params: Dict[str, Any] = {
+            'account_index': account_index,
+            "in": True,
+            'out': False
+        }
+
+        if unconfirmed:
+            params["pool"] = True
+
+        if min_height:
+            params["filter_by_height"] = True
+            params["min_height"] = min_height
+        
+        if subaddr_indices:
+            params['subaddr_indices'] = subaddr_indices
+
+        resp = self.raw_request("get_transfers", params)
+        transfers = resp.get("in", [])
+        if unconfirmed:
+            transfers.extend(resp.get("pool", []))
+
+        return list(map(self._inpayment, transfers))
+
+    # TODO: consider removing/deprecating
     def transfers_in(self, account, pmtfilter):
         params = {'account_index': account, 'pending': False}
         method = 'get_transfers'
