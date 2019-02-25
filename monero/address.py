@@ -138,6 +138,17 @@ class SubAddress(BaseAddress):
     _valid_netbytes = (42, 63, 36)
     # NOTE: _valid_netbytes order is (mainnet, testnet, stagenet)
 
+    def __init__(self, addr, addr_index=None, label=None):
+        """SubAddress instance can optionally have the index information."""
+        if addr_index:
+            if not isinstance(addr_index, int) or not addr_index > 0:
+                raise ValueError(
+                    "SubAddress index must be an integer bigger then 0"
+                )
+
+        super().__init__(addr, label)
+        self.index = addr_index
+
     def with_payment_id(self, _):
         raise TypeError("SubAddress cannot be integrated with payment ID")
 
@@ -175,7 +186,7 @@ class IntegratedAddress(Address):
         return Address(base58.encode(hexlify(data + checksum)))
 
 
-def address(addr, label=None):
+def address(addr, index=None, label=None):
     """Discover the proper class and return instance for a given Monero address.
 
     :param addr: the address as a string-like object
@@ -189,7 +200,7 @@ def address(addr, label=None):
         if netbyte in Address._valid_netbytes:
             return Address(addr, label=label)
         elif netbyte in SubAddress._valid_netbytes:
-            return SubAddress(addr, label=label)
+            return SubAddress(addr, addr_index=index, label=label)
         raise ValueError("Invalid address netbyte {nb:x}. Allowed values are: {allowed}".format(
             nb=netbyte,
             allowed=", ".join(map(
