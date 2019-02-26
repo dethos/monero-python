@@ -143,7 +143,7 @@ class SubAddress(BaseAddress):
         if addr_index:
             if not isinstance(addr_index, int) or not addr_index > 0:
                 raise ValueError(
-                    "SubAddress index must be an integer bigger then 0"
+                    "SubAddress index must be an integer bigger than 0"
                 )
 
         super().__init__(addr, label)
