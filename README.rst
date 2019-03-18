@@ -4,12 +4,12 @@ Python Monero module
 |travis|_ |coveralls|_
 
 
-.. |travis| image:: https://travis-ci.org/emesik/monero-python.svg
-.. _travis: https://travis-ci.org/emesik/monero-python
+.. |travis| image:: https://travis-ci.org/python-monero/monero-python.svg
+.. _travis: https://travis-ci.org/python-monero/monero-python
 
 
-.. |coveralls| image:: https://coveralls.io/repos/github/emesik/monero-python/badge.svg
-.. _coveralls: https://coveralls.io/github/emesik/monero-python
+.. |coveralls| image:: https://coveralls.io/repos/github/python-monero/monero-python/badge.svg
+.. _coveralls: https://coveralls.io/github/python-monero/monero-python
 
 
 A comprehensive Python module for handling Monero cryptocurrency.
