@@ -8,7 +8,7 @@ except ImportError:
 import warnings
 
 from monero.wallet import Wallet
-from monero.address import BaseAddress, Address
+from monero.address import BaseAddress, Address, SubAddress
 from monero.seed import Seed
 from monero.transaction import IncomingPayment, OutgoingPayment, Transaction
 from monero.backends.jsonrpc import JSONRPCWallet
@@ -135,7 +135,30 @@ class SubaddrWalletTestCase(unittest.TestCase):
             waddr,
             '9vgV48wWAPTWik5QSUSoGYicdvvsbSNHrT9Arsx1XBTz6VrWPSgfmnUKSPZDMyX4Ms8R9TkhB4uFqK9s5LUBbV6YQN2Q9ag')
         self.assertEqual(a0addr.label, 'Primary account')
-        self.assertEqual(len(self.wallet.accounts[0].addresses()), 8)
+        addresses = self.wallet.accounts[0].addresses()
+        self.assertEqual(len(addresses), 8)
+        for i in range(1, len(addresses)):
+            self.assertEqual(addresses[i].index, i)
+
+    @patch('monero.backends.jsonrpc.requests.post')
+    def test_new_address(self, mock_post):
+        mock_post.return_value.status_code = 200
+        mock_post.return_value.json.return_value = self.accounts_result
+        self.wallet = Wallet(JSONRPCWallet())
+        new_address = "BbBjyYoYNNwFfL8RRVRTMiZUofBLpjRxdNnd5E4LyGcAK5CEsnL3gmE5QkrDRta7RPficGHcFdR6rUwWcjnwZVvCE3tLxhJ"
+        mock_post.return_value.json.return_value = {
+            'id': 0,
+            'jsonrpc': '2.0',
+            'result': {
+                "address": new_address,
+                "address_index": 5
+            }
+        }
+        addr = self.wallet.new_address()
+        self.assertIsInstance(addr, SubAddress)
+        self.assertEqual(addr, new_address)
+        self.assertEqual(addr.index, 5)
+
 
     @patch('monero.backends.jsonrpc.requests.post')
     def test_incoming_confirmed(self, mock_post):

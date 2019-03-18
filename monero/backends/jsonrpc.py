@@ -171,13 +171,14 @@ class JSONRPCWallet(object):
         for _addr in _addresses['addresses']:
             addresses[_addr['address_index']] = address(
                 _addr['address'],
+                index=_addr['address_index'],
                 label=_addr.get('label', None))
         return addresses
 
     def new_address(self, account=0, label=None):
         _address = self.raw_request(
             'create_address', {'account_index': account, 'label': label})
-        return SubAddress(_address['address'])
+        return SubAddress(_address['address'], _address['address_index'])
 
     def balances(self, account=0):
         _balance = self.raw_request('getbalance', {'account_index': account})

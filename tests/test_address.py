@@ -148,6 +148,19 @@ class Tests(object):
         sa = SubAddress(self.subaddr)
         self.assertRaises(TypeError, sa.with_payment_id, self.pid)
 
+    def test_subaddress_invalid_index(self):
+        self.assertRaises(ValueError, SubAddress, (self.subaddr, 0))
+        self.assertRaises(ValueError, SubAddress, (self.subaddr, -1))
+        self.assertRaises(ValueError, SubAddress, (self.subaddr, "other_type"))
+
+    def test_subaddress_valid_index(self):
+        sa1 = SubAddress(self.subaddr, 1)
+        self.assertEqual(sa1.index, 1)
+        sa2 = SubAddress(self.subaddr, 2)
+        self.assertEqual(sa2.index, 2)
+        sa3 = SubAddress(self.subaddr, 200)
+        self.assertEqual(sa3.index, 200)
+
 
 class AddressTestCase(Tests, unittest.TestCase):
     addr = '47ewoP19TN7JEEnFKUJHAYhGxkeTRH82sf36giEp9AcNfDBfkAtRLX7A6rZz18bbNHPNV7ex6WYbMN3aKisFRJZ8Ebsmgef'
