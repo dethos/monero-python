@@ -1,12 +1,13 @@
 from binascii import hexlify, unhexlify
 from sha3 import keccak_256
+from typing import Optional, List
 import struct
 
 from . import address
 from . import base58
 from . import ed25519
 from . import prio
-from .transaction import Payment, PaymentManager
+from .transaction import Payment, PaymentManager, Output
 
 
 class Wallet(object):
@@ -148,6 +149,43 @@ class Wallet(object):
 
         """
         return self._backend.import_key_images(key_images_hex)
+    
+    def get_unspent_outputs(
+        self,
+        account_index: int = 0,
+        subaddr_indices: Optional[List[int]] = None,
+        verbose: bool = False
+    ) -> List[Output]:
+        '''
+        Fetches the unspent outputs in the Wallet.
+
+        Args:
+            account_index: The index of the account whose Unspent Output we
+            want to fetch.
+            subaddr_indices: If it's provided, this function only fetches the
+            Unspent Outputs addressed to the Subaddresses whose indices are
+            included in this list.
+            verbose: Whether to include key_image in the RPC response.
+        '''
+        return self._backend.get_unspent_outputs(
+            account_index=account_index,
+            subaddr_indices=subaddr_indices,
+            verbose=verbose
+        )
+    
+    def get_incoming_transactions(
+        self,
+        account_index: int = 0,
+        unconfirmed: bool = False,
+        min_height: int = 0,
+        subaddr_indices: Optional[List[int]] = None
+    ):
+        return self._backend.get_incoming_transactions(
+            account_index=account_index,
+            unconfirmed=unconfirmed,
+            min_height=min_height,
+            subaddr_indices=subaddr_indices
+        )
 
     # Following methods operate on default account (index=0)
     def balances(self):

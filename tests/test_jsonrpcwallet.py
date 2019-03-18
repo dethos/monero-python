@@ -2,11 +2,11 @@ from datetime import datetime
 from decimal import Decimal
 import unittest
 try:
-    from unittest.mock import patch, Mock
+    from unittest.mock import patch, Mock, MagicMock
 except ImportError:
-    from mock import patch, Mock
+    from mock import patch, Mock, MagicMock
 import warnings
-
+import pytest
 from monero.wallet import Wallet
 from monero.address import BaseAddress, Address, SubAddress
 from monero.seed import Seed
@@ -1035,3 +1035,251 @@ class SubaddrWalletTestCase(unittest.TestCase):
         self.assertEqual(
             self.wallet.import_key_images(kimgs),
             (125578, Decimal('322.437994530000'), Decimal('0')))
+
+
+@pytest.mark.parametrize('request_params, response, results_count',
+    (
+        (
+            {
+                'account_index': 100,
+                'in': True,
+                'out': False,
+                'pool': True,
+                'min_height': 500,
+                'filter_by_height': True
+            },
+            {
+                'in': [
+                    {
+                        "address": "77Vx9cs1VPicFndSVgYUvTdLCJEZw9h81hXLMYsjBCXSJfUehLa9TDW3Ffh45SQa7xb6dUs18mpNxfUhQGqfwXPSMrvKhVp",
+                        "amount": 200000000000,
+                        "confirmations": 1,
+                        "double_spend_seen": False,
+                        "fee": 21650200000,
+                        "height": 153624,
+                        "note": "",
+                        "payment_id": "0000000000000000",
+                        "subaddr_index": {
+                            "major": 1,
+                            "minor": 0
+                        },
+                        "suggested_confirmations_threshold": 1,
+                        "timestamp": 1535918400,
+                        "txid": "c36258a276018c3a4bc1f195a7fb530f50cd63a4fa765fb7c6f7f49fc051762a",
+                        "type": "in",
+                        "unlock_time": 0
+                    }
+                ],
+                'pool': [
+                    {
+                        "address": "77Vx9cs1VPicFndSVgYUvTdLCJEZw9h81hXLMYsjBCXSJfUehLa9TDW3Ffh45SQa7xb6dUs18mpNxfUhQGqfwXPSMrvKhVp",
+                        "amount": 200000000000,
+                        "confirmations": 1,
+                        "double_spend_seen": False,
+                        "fee": 21650200000,
+                        "height": 153624,
+                        "note": "",
+                        "payment_id": "0000000000000000",
+                        "subaddr_index": {
+                            "major": 1,
+                            "minor": 0
+                        },
+                        "suggested_confirmations_threshold": 1,
+                        "timestamp": 1535918400,
+                        "txid": "c36258a276018c3a4bc1f195a7fb530f50cd63a4fa765fb7c6f7f49fc051762a",
+                        "type": "in",
+                        "unlock_time": 0
+                    }
+                ]
+            },
+            2
+        ),
+        (
+            {
+                'account_index': 50,
+                'in': True,
+                'out': False,
+                'pool': True,
+                'min_height': 100,
+                'filter_by_height': True
+            },
+            {
+                'in': [],
+                'pool': [
+                    {
+                        "address": "77Vx9cs1VPicFndSVgYUvTdLCJEZw9h81hXLMYsjBCXSJfUehLa9TDW3Ffh45SQa7xb6dUs18mpNxfUhQGqfwXPSMrvKhVp",
+                        "amount": 200000000000,
+                        "confirmations": 1,
+                        "double_spend_seen": False,
+                        "fee": 21650200000,
+                        "height": 153624,
+                        "note": "",
+                        "payment_id": "0000000000000000",
+                        "subaddr_index": {
+                            "major": 1,
+                            "minor": 0
+                        },
+                        "suggested_confirmations_threshold": 1,
+                        "timestamp": 1535918400,
+                        "txid": "c36258a276018c3a4bc1f195a7fb530f50cd63a4fa765fb7c6f7f49fc051762a",
+                        "type": "in",
+                        "unlock_time": 0
+                    }
+                ]
+            },
+            1
+        ),
+        (
+            {
+                'account_index': 0,
+                'in': True,
+                'out': False,
+                'subaddr_indices': [0, 1]
+            },
+            {
+                'in': [
+                    {
+                        "address": "77Vx9cs1VPicFndSVgYUvTdLCJEZw9h81hXLMYsjBCXSJfUehLa9TDW3Ffh45SQa7xb6dUs18mpNxfUhQGqfwXPSMrvKhVp",
+                        "amount": 200000000000,
+                        "confirmations": 1,
+                        "double_spend_seen": False,
+                        "fee": 21650200000,
+                        "height": 153624,
+                        "note": "",
+                        "payment_id": "0000000000000000",
+                        "subaddr_index": {
+                            "major": 1,
+                            "minor": 0
+                        },
+                        "suggested_confirmations_threshold": 1,
+                        "timestamp": 1535918400,
+                        "txid": "c36258a276018c3a4bc1f195a7fb530f50cd63a4fa765fb7c6f7f49fc051762a",
+                        "type": "in",
+                        "unlock_time": 0
+                    }
+                ],
+                'pool': [
+                    {
+                        "address": "77Vx9cs1VPicFndSVgYUvTdLCJEZw9h81hXLMYsjBCXSJfUehLa9TDW3Ffh45SQa7xb6dUs18mpNxfUhQGqfwXPSMrvKhVp",
+                        "amount": 200000000000,
+                        "confirmations": 1,
+                        "double_spend_seen": False,
+                        "fee": 21650200000,
+                        "height": 153624,
+                        "note": "",
+                        "payment_id": "0000000000000000",
+                        "subaddr_index": {
+                            "major": 1,
+                            "minor": 0
+                        },
+                        "suggested_confirmations_threshold": 1,
+                        "timestamp": 1535918400,
+                        "txid": "c36258a276018c3a4bc1f195a7fb530f50cd63a4fa765fb7c6f7f49fc051762a",
+                        "type": "in",
+                        "unlock_time": 0
+                    }
+                ]
+            },
+            1
+        )
+    )
+)
+def test_get_incoming_transactions(request_params, response, results_count):
+    wallet = JSONRPCWallet()
+
+    raw_request_mock = MagicMock(return_value=response)
+
+    with patch.object(wallet, 'raw_request', raw_request_mock):
+        txs = wallet.get_incoming_transactions(
+            account_index=request_params['account_index'],
+            unconfirmed=request_params.get('pool'),
+            min_height=request_params.get('min_height'),
+            subaddr_indices=request_params.get('subaddr_indices')
+        )
+        
+        assert raw_request_mock.called
+        raw_request_mock.assert_called_with(
+            'get_transfers',
+            request_params
+        )
+        assert len(txs) == results_count
+
+
+@pytest.mark.parametrize('request_params, response', (
+    (
+        {
+            'transfer_type': 'available',
+            'account_index': 100,
+            'verbose': True,
+            'subaddr_indices': (0, 2)
+        },
+        {
+            'transfers':[
+                {
+                    "amount": 60000000000000,
+                    "global_index": 122405,
+                    "key_image": "768f5144777eb23477ab7acf83562581d690abaf98ca897c03a9d2b900eb479b",
+                    "spent": False,
+                    "subaddr_index": 0,
+                    "tx_hash": "f53401f21c6a43e44d5dd7a90eba5cf580012ad0e15d050059136f8a0da34f6b",
+                    "tx_size": 159
+                },
+                {
+                    "amount": 27126892247503,
+                    "global_index": 594994,
+                    "key_image": "7e561394806afd1be61980cc3431f6ef3569fa9151cd8d234f8ec13aa145695e",
+                    "spent": False,
+                    "subaddr_index": 2,
+                    "tx_hash": "106d4391a031e5b735ded555862fec63233e34e5fa4fc7edcfdbe461c275ae5b",
+                    "tx_size": 157
+                }
+            ]
+        }
+    ),
+    (
+        {
+            'transfer_type': 'available',
+            'account_index': 100,
+            'verbose': False,
+        },
+        {
+            'transfers':[
+                {
+                    "amount": 60000000000000,
+                    "global_index": 122405,
+                    "spent": False,
+                    "subaddr_index": 0,
+                    "tx_hash": "f53401f21c6a43e44d5dd7a90eba5cf580012ad0e15d050059136f8a0da34f6b",
+                    "tx_size": 159
+                },
+                {
+                    "amount": 27126892247503,
+                    "global_index": 594994,
+                    "spent": False,
+                    "subaddr_index": 3,
+                    "tx_hash": "106d4391a031e5b735ded555862fec63233e34e5fa4fc7edcfdbe461c275ae5b",
+                    "tx_size": 157
+                }
+            ]
+        }
+    ),
+))
+def test_get_unspent_outputs(request_params, response):
+    wallet = JSONRPCWallet()
+
+    raw_request_mock = MagicMock(return_value=response)
+
+    with patch.object(wallet, 'raw_request', raw_request_mock):
+        outputs = wallet.get_unspent_outputs(
+            account_index=request_params['account_index'],
+            subaddr_indices=request_params.get('subaddr_indices'),
+            verbose=request_params.get('verbose')
+        )
+
+        assert raw_request_mock.called
+        raw_request_mock.assert_called_once_with(
+            'incoming_transfers',
+            request_params    
+        )
+
+        assert len(outputs) == len(response['transfers'])

@@ -1,9 +1,11 @@
 from datetime import datetime
 from decimal import Decimal
+from unittest.mock import MagicMock
 import unittest
 import warnings
 
 from monero.wallet import Wallet
+# from monero.backends.jsonrpc import JSONRPCWallet
 from monero.account import Account
 from monero.address import address
 from monero.numbers import PaymentID
@@ -195,3 +197,15 @@ class FiltersTestCase(unittest.TestCase):
 
     def test_filter_excessive(self):
         self.assertRaises(ValueError, self.wallet.incoming, excessive_argument='foo')
+
+
+def test_get_unspent_outputs():
+    wallet = Wallet(MagicMock())
+    wallet.get_unspent_outputs()
+    assert wallet._backend.get_unspent_outputs.called
+
+
+def test_get_incoming_transactions():
+    wallet = Wallet(MagicMock())
+    wallet.get_incoming_transactions()
+    assert wallet._backend.get_incoming_transactions.called
