@@ -193,7 +193,7 @@ class JSONRPCWallet(object):
         subaddr_indices: Optional[List[int]] = None,
         verbose: bool = False
     ) -> List[Output]:
-        """
+        '''
         Fetches the unspent outputs in the Wallet.
 
         Args:
@@ -203,27 +203,27 @@ class JSONRPCWallet(object):
             Unspent Outputs addressed to the Subaddress whose indices are
             included in this list.
             verbose: Whether to include key_image in the RPC response.
-        """
+        '''
         params = {
-            "transfer_type": "available",
+            'transfer_type': 'available',
             'account_index': account_index,
             'verbose': verbose
         }
         if subaddr_indices:
             params['subaddr_indices'] = subaddr_indices
 
-        method = "incoming_transfers"
-        outputs = self.raw_request(method, params)["transfers"]
+        method = 'incoming_transfers'
+        outputs = self.raw_request(method, params)['transfers']
 
         return [
             Output(
-                atomic_amount=elem.get("amount"),
-                global_index=elem.get("global index"),
-                key_image=elem.get("key image"),
-                spent=elem.get("spent"),
-                subaddr_index=elem.get("subaddr index"),
-                tx_hash=elem.get("tx hash"),
-                tx_size=elem.get("tx size"),
+                atomic_amount=elem.get('amount'),
+                global_index=elem.get('global index'),
+                key_image=elem.get('key image'),
+                spent=elem.get('spent'),
+                subaddr_index=elem.get('subaddr index'),
+                tx_hash=elem.get('tx hash'),
+                tx_size=elem.get('tx size'),
             )
             for elem in outputs
         ]
@@ -235,7 +235,7 @@ class JSONRPCWallet(object):
         min_height: int = 0,
         subaddr_indices: Optional[List[int]] = None
     ) -> List[IncomingPayment]:
-        """
+        '''
         Calls the wallet RPC to get incoming transactions.
 
         Args:
@@ -247,27 +247,27 @@ class JSONRPCWallet(object):
             subaddr_indices: If this is included, this function only fetches
             the the Incoming Transactions addressed to the Subaddresses whose
             indices are included in this list
-        """
+        '''
         params: Dict[str, Any] = {
             'account_index': account_index,
-            "in": True,
+            'in': True,
             'out': False
         }
 
         if unconfirmed:
-            params["pool"] = True
+            params['pool'] = True
 
         if min_height:
-            params["filter_by_height"] = True
-            params["min_height"] = min_height
+            params['filter_by_height'] = True
+            params['min_height'] = min_height
         
         if subaddr_indices:
             params['subaddr_indices'] = subaddr_indices
 
-        resp = self.raw_request("get_transfers", params)
-        transfers = resp.get("in", [])
+        resp = self.raw_request('get_transfers', params)
+        transfers = resp.get('in', [])
         if unconfirmed:
-            transfers.extend(resp.get("pool", []))
+            transfers.extend(resp.get('pool', []))
 
         return list(map(self._inpayment, transfers))
 

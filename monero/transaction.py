@@ -221,17 +221,17 @@ class PaymentFilter(object):
 
 
 class Output:
-    """
+    '''
     Represents Wallet Outputs. Both spent and unspent.
-    """
+    '''
     def __init__(
         self,
         atomic_amount: int = 0,
         global_index: int = 0,
-        key_image: str = "",
+        key_image: str = '',
         spent: bool = False,
         subaddr_index: int = 0,
-        tx_hash: str = "",
+        tx_hash: str = '',
         tx_size: int = 0,
     ):
         self.atomic_amount = atomic_amount

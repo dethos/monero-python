@@ -156,7 +156,7 @@ class Wallet(object):
         subaddr_indices: Optional[List[int]] = None,
         verbose: bool = False
     ) -> List[Output]:
-        """
+        '''
         Fetches the unspent outputs in the Wallet.
 
         Args:
@@ -166,7 +166,7 @@ class Wallet(object):
             Unspent Outputs addressed to the Subaddresses whose indices are
             included in this list.
             verbose: Whether to include key_image in the RPC response.
-        """
+        '''
         return self._backend.get_unspent_outputs(
             account_index=account_index,
             subaddr_indices=subaddr_indices,
