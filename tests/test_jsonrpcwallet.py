@@ -1264,13 +1264,13 @@ def test_get_incoming_transactions(request_params, response, results_count):
         }
     ),
 ))
-def test_get_unspent_inputs(request_params, response):
+def test_get_unspent_outputs(request_params, response):
     wallet = JSONRPCWallet()
 
     raw_request_mock = MagicMock(return_value=response)
 
     with patch.object(wallet, 'raw_request', raw_request_mock):
-        inputs = wallet.get_unspent_inputs(
+        outputs = wallet.get_unspent_outputs(
             account_index=request_params['account_index'],
             subaddr_indices=request_params.get('subaddr_indices'),
             verbose=request_params.get('verbose')
@@ -1282,4 +1282,4 @@ def test_get_unspent_inputs(request_params, response):
             request_params    
         )
 
-        assert len(inputs) == len(response['transfers'])
+        assert len(outputs) == len(response['transfers'])

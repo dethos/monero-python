@@ -11,7 +11,7 @@ from monero.transaction import (
     OutgoingPayment,
     Transaction,
     _ByHeight,
-    Input
+    Output
 )
 
 class FiltersTestCase(unittest.TestCase):
@@ -55,9 +55,9 @@ class SortingTestCase(unittest.TestCase):
             random.shuffle(pmts)
 
 
-class TestInput:
+class TestOutput:
     def test_amount(self):
         amount = 100
-        dummy_input = Input(atomic_amount=to_atomic(amount))
+        dummy_output = Output(atomic_amount=to_atomic(amount))
 
-        assert dummy_input.amount == amount
+        assert dummy_output.amount == amount

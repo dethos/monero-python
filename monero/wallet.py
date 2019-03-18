@@ -7,7 +7,7 @@ from . import address
 from . import base58
 from . import ed25519
 from . import prio
-from .transaction import Payment, PaymentManager, Input
+from .transaction import Payment, PaymentManager, Output
 
 
 class Wallet(object):
@@ -150,24 +150,24 @@ class Wallet(object):
         """
         return self._backend.import_key_images(key_images_hex)
     
-    def get_unspent_inputs(
+    def get_unspent_outputs(
         self,
         account_index: int = 0,
         subaddr_indices: Optional[List[int]] = None,
         verbose: bool = False
-    ) -> List[Input]:
+    ) -> List[Output]:
         """
-        Fetches the unspent inputs in the Wallet.
+        Fetches the unspent outputs in the Wallet.
 
         Args:
-            account_index: The index of the account whose Unspent Inputs we
+            account_index: The index of the account whose Unspent Output we
             want to fetch.
             subaddr_indices: If it's provided, this function only fetches the
-            Unspent Inputs addressed to the Subaddress whose indices are
+            Unspent Outputs addressed to the Subaddresses whose indices are
             included in this list.
             verbose: Whether to include key_image in the RPC response.
         """
-        return self._backend.get_unspent_inputs(
+        return self._backend.get_unspent_outputs(
             account_index=account_index,
             subaddr_indices=subaddr_indices,
             verbose=verbose

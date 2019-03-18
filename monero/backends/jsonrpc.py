@@ -12,7 +12,7 @@ from ..address import address, Address, SubAddress
 from ..numbers import from_atomic, to_atomic, PaymentID
 from ..seed import Seed
 from ..transaction import (
-    Transaction, IncomingPayment, OutgoingPayment, Input
+    Transaction, IncomingPayment, OutgoingPayment, Output
 )
 
 _log = logging.getLogger(__name__)
@@ -187,20 +187,20 @@ class JSONRPCWallet(object):
         _balance = self.raw_request('getbalance', {'account_index': account})
         return (from_atomic(_balance['balance']), from_atomic(_balance['unlocked_balance']))
 
-    def get_unspent_inputs(
+    def get_unspent_outputs(
         self,
         account_index: int = 0,
         subaddr_indices: Optional[List[int]] = None,
         verbose: bool = False
-    ) -> List[Input]:
+    ) -> List[Output]:
         """
-        Fetches the unspent inputs in the Wallet.
+        Fetches the unspent outputs in the Wallet.
 
         Args:
-            account_index: The index of the account whose Unspent Inputs we
+            account_index: The index of the account whose Unspent Outputs we
             want to fetch.
             subaddr_indices: If it's provided, this function only fetches the
-            Unspent Inputs addressed to the Subaddress whose indices are
+            Unspent Outputs addressed to the Subaddress whose indices are
             included in this list.
             verbose: Whether to include key_image in the RPC response.
         """
@@ -213,10 +213,10 @@ class JSONRPCWallet(object):
             params['subaddr_indices'] = subaddr_indices
 
         method = "incoming_transfers"
-        inputs = self.raw_request(method, params)["transfers"]
+        outputs = self.raw_request(method, params)["transfers"]
 
         return [
-            Input(
+            Output(
                 atomic_amount=elem.get("amount"),
                 global_index=elem.get("global index"),
                 key_image=elem.get("key image"),
@@ -225,7 +225,7 @@ class JSONRPCWallet(object):
                 tx_hash=elem.get("tx hash"),
                 tx_size=elem.get("tx size"),
             )
-            for elem in inputs
+            for elem in outputs
         ]
 
     def get_incoming_transactions(

@@ -199,10 +199,10 @@ class FiltersTestCase(unittest.TestCase):
         self.assertRaises(ValueError, self.wallet.incoming, excessive_argument='foo')
 
 
-def test_get_unspent_inputs():
+def test_get_unspent_outputs():
     wallet = Wallet(MagicMock())
-    wallet.get_unspent_inputs()
-    assert wallet._backend.get_unspent_inputs.called
+    wallet.get_unspent_outputs()
+    assert wallet._backend.get_unspent_outputs.called
 
 
 def test_get_incoming_transactions():

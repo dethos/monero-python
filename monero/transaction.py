@@ -220,9 +220,9 @@ class PaymentFilter(object):
             key=_ByHeight)
 
 
-class Input:
+class Output:
     """
-    Represents Wallet Inputs. Both spent and unspent.
+    Represents Wallet Outputs. Both spent and unspent.
     """
     def __init__(
         self,
@@ -245,6 +245,6 @@ class Input:
     @property
     def amount(self) -> Decimal:
         '''
-        Returns the Input's amount, expressed in XMR.
+        Returns the Output's amount, expressed in XMR.
         '''
         return from_atomic(self.atomic_amount)
