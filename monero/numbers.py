@@ -2,6 +2,7 @@ from decimal import Decimal
 import sys
 
 PICONERO = Decimal('0.000000000001')
+EMPTY_KEY = '0' * 64
 
 if sys.version_info < (3,): # pragma: no cover
     _integer_types = (int, long,)
@@ -13,6 +14,9 @@ else:                       # pragma: no cover
 
 def to_atomic(amount):
     """Convert Monero decimal to atomic integer of piconero."""
+    if not isinstance(amount, (Decimal, float) + _integer_types):
+        raise ValueError("Amount '{}' doesn't have numeric type. Only Decimal, int, long and "
+                "float (not recommended) are accepted as amounts.")
     return int(amount * 10**12)
 
 def from_atomic(amount):
