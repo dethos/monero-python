@@ -12,17 +12,19 @@ Python Monero module
 .. _coveralls: https://coveralls.io/github/python-monero/monero-python
 
 
-This is a fork of [Monero Python](https://github.com/monero-ecosystem/monero-python),
-a comprehensive Python module for handling Monero cryptocurrency. The current purpose is to include
-changes and features that by design are not included on the original project.
+This is a fork of `Monero Python`_, a comprehensive Python module for handling
+Monero cryptocurrency. The current purpose is to include changes and features
+that by design are not included on the original project.
 
 This project contains the following changes:
 
 * Dropped support for python 2
-* Added: `get_unspent_outputs`_ and `get_incoming_transactions`_ to the wallet
-* Added: `address_index`_ to instances of `SubAddress`_.
+* Added: ``get_unspent_outputs`` and ``get_incoming_transactions`` to the wallet
+* Added: ``address_index`` to instances of ``SubAddress``.
 
 For documentation about how to use the package please check the original repository.
+
+.. _`Monero Python`: https://github.com/monero-ecosystem/monero-python
 
 Copyrights
 ----------
@@ -49,6 +51,9 @@ Copyright (c) 2011 thomasv@gitorious (``monero/seed.py`` based on `Electrum`_)
 .. _`brucexiu`: https://github.com/brucexiu
 .. _`lialsoftlab`: https://github.com/lialsoftlab
 .. _`moneroexamples`: https://github.com/moneroexamples
+.. _`lalvarezguillen`: https://github.com/lalvarezguillen
+.. _`dethos`: https://github.com/dethos
+.. _`Domol`: https://github.com/Domol
 
 Development
 -----------
