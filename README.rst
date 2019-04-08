@@ -16,10 +16,10 @@ This is a fork of `Monero Python`_, a comprehensive Python module for handling
 Monero cryptocurrency. The current purpose is to include changes and features
 that by design are not included on the original project.
 
-This project contains the following changes:
+This fork contains the following changes:
 
-* Dropped support for python 2
-* Added: ``get_unspent_outputs`` and ``get_incoming_transactions`` to the wallet
+* Dropped support for python 2.
+* Added: ``get_unspent_outputs`` and ``get_incoming_transactions`` to the wallet.
 * Added: ``address_index`` to instances of ``SubAddress``.
 
 For documentation about how to use the package please check the original repository.
