@@ -1308,6 +1308,14 @@ def test_get_incoming_transactions(request_params, response, results_count):
             ]
         }
     ),
+    (
+        {
+            'transfer_type': 'available',
+            'account_index': 100,
+            'verbose': False,
+        },
+        {}
+    ),
 ))
 def test_get_unspent_outputs(request_params, response):
     wallet = JSONRPCWallet()
@@ -1327,4 +1335,4 @@ def test_get_unspent_outputs(request_params, response):
             request_params
         )
 
-        assert len(outputs) == len(response['transfers'])
+        assert len(outputs) == len(response.get('transfers', []))

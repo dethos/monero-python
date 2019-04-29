@@ -204,7 +204,8 @@ class JSONRPCWallet(object):
             params['subaddr_indices'] = subaddr_indices
 
         method = 'incoming_transfers'
-        outputs = self.raw_request(method, params)['transfers']
+        resp = self.raw_request(method, params)
+        outputs = resp.get('transfers', [])
 
         return [
             Output(
