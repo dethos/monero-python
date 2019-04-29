@@ -21,6 +21,8 @@ This fork contains the following changes:
 * Dropped support for python 2.
 * Added: ``get_unspent_outputs`` and ``get_incoming_transactions`` to the wallet.
 * Added: ``address_index`` to instances of ``SubAddress``.
+* Added: optional ``timeout`` to ``JSONRPCWallet`` and ``JSONRPCDaemon``.  Please note that
+  a timeout does not mean that the underlying operation was not executed.
 
 For documentation about how to use the package please check the original repository.
 

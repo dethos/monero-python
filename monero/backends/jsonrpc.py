@@ -25,8 +25,11 @@ class JSONRPCDaemon(object):
     :param host: host name or IP
     :param port: port number
     :param path: path for JSON RPC requests (should not be changed)
+    :param timeout: optional timeout for requests (seconds). Please note that
+    a timeout does not mean that the underlying operation was not executed.
     """
-    def __init__(self, protocol='http', host='127.0.0.1', port=18081, path='/json_rpc', user='', password=''):
+    def __init__(self, protocol='http', host='127.0.0.1', port=18081,
+                 path='/json_rpc', user='', password='', timeout=None):
         self.url = '{protocol}://{host}:{port}'.format(
                 protocol=protocol,
                 host=host,
@@ -34,6 +37,7 @@ class JSONRPCDaemon(object):
         _log.debug("JSONRPC daemon backend URL: {url}".format(url=self.url))
         self.user = user
         self.password = password
+        self.timeout = timeout
 
     def info(self):
         info = self.raw_jsonrpc_request('get_info')
@@ -65,7 +69,8 @@ class JSONRPCDaemon(object):
         _log.debug(u"Request: {path}\nData: {data}".format(
             path=path,
             data=json.dumps(data, indent=2, sort_keys=True)))
-        rsp = requests.post(self.url + path, headers=hdr, data=json.dumps(data))
+        rsp = requests.post(self.url + path, headers=hdr, data=json.dumps(data),
+                            timeout=self.timeout)
         if rsp.status_code != 200:
             raise RPCError("Invalid HTTP status {code} for path {path}.".format(
                 code=rsp.status_code,
@@ -83,7 +88,8 @@ class JSONRPCDaemon(object):
             method=method,
             params=json.dumps(params, indent=2, sort_keys=True)))
         auth = requests.auth.HTTPDigestAuth(self.user, self.password)
-        rsp = requests.post(self.url + '/json_rpc', headers=hdr, data=json.dumps(data), auth=auth)
+        rsp = requests.post(self.url + '/json_rpc', headers=hdr, data=json.dumps(data),
+                            auth=auth, timeout=self.timeout)
         if rsp.status_code == 401:
             raise Unauthorized("401 Unauthorized. Invalid RPC user name or password.")
         elif rsp.status_code != 200:
@@ -115,11 +121,14 @@ class JSONRPCWallet(object):
     :param path: path for JSON RPC requests (should not be changed)
     :param user: username to authenticate with over RPC
     :param password: password to authenticate with over RPC
+    :param timeout: optional timeout for requests (seconds). Please note that
+    a timeout does not mean that the underlying operation was not executed.
     """
     _master_address = None
     _addresses = None
 
-    def __init__(self, protocol='http', host='127.0.0.1', port=18088, path='/json_rpc', user='', password=''):
+    def __init__(self, protocol='http', host='127.0.0.1', port=18088,
+                 path='/json_rpc', user='', password='', timeout=None):
         self.url = '{protocol}://{host}:{port}/json_rpc'.format(
                 protocol=protocol,
                 host=host,
@@ -129,6 +138,7 @@ class JSONRPCWallet(object):
         self.password = password
         _log.debug("JSONRPC wallet backend auth: '{user}'/'{stars}'".format(
             user=user, stars=('*' * len(password)) if password else ''))
+        self.timeout = timeout
 
     def height(self):
         return self.raw_request('getheight')['height']
@@ -401,7 +411,8 @@ class JSONRPCWallet(object):
             method=method,
             params=json.dumps(params, indent=2, sort_keys=True)))
         auth = requests.auth.HTTPDigestAuth(self.user, self.password)
-        rsp = requests.post(self.url, headers=hdr, data=json.dumps(data), auth=auth)
+        rsp = requests.post(self.url, headers=hdr, data=json.dumps(data),
+                            auth=auth, timeout=self.timeout)
         if rsp.status_code == 401:
             raise Unauthorized("401 Unauthorized. Invalid RPC user name or password.")
         elif rsp.status_code != 200:
