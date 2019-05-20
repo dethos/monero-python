@@ -71,6 +71,8 @@ class JSONRPCDaemon(object):
             data=json.dumps(data, indent=2, sort_keys=True)))
         rsp = requests.post(self.url + path, headers=hdr, data=json.dumps(data),
                             timeout=self.timeout)
+        _log.info("JSONRPCDaemon raw_request to %s took %f seconds",
+                  path, rsp.elapsed.total_seconds())
         if rsp.status_code != 200:
             raise RPCError("Invalid HTTP status {code} for path {path}.".format(
                 code=rsp.status_code,
@@ -90,6 +92,8 @@ class JSONRPCDaemon(object):
         auth = requests.auth.HTTPDigestAuth(self.user, self.password)
         rsp = requests.post(self.url + '/json_rpc', headers=hdr, data=json.dumps(data),
                             auth=auth, timeout=self.timeout)
+        _log.info("JSONRPCDaemon raw_jsonrpc_request to %s took %f seconds",
+                  method, rsp.elapsed.total_seconds())
         if rsp.status_code == 401:
             raise Unauthorized("401 Unauthorized. Invalid RPC user name or password.")
         elif rsp.status_code != 200:
@@ -262,7 +266,7 @@ class JSONRPCWallet(object):
         if min_height:
             params['filter_by_height'] = True
             params['min_height'] = min_height
-        
+
         if subaddr_indices:
             params['subaddr_indices'] = subaddr_indices
 
@@ -413,6 +417,8 @@ class JSONRPCWallet(object):
         auth = requests.auth.HTTPDigestAuth(self.user, self.password)
         rsp = requests.post(self.url, headers=hdr, data=json.dumps(data),
                             auth=auth, timeout=self.timeout)
+        _log.info("JSONRPCWallet raw_request to %s took %f seconds",
+                  method, rsp.elapsed.total_seconds())
         if rsp.status_code == 401:
             raise Unauthorized("401 Unauthorized. Invalid RPC user name or password.")
         elif rsp.status_code != 200:
